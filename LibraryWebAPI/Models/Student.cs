@@ -1,6 +1,6 @@
 ﻿namespace LibraryWebAPI.Models
 {
-    public class Student
+    public class Student:BaseModel
     {
         public int studentId { get; set; }
         public string studentName { get; set; }
