@@ -7,7 +7,7 @@ namespace LibraryWebAPI.Models
     {
         [Key]
         public int WriterId { get; set; }
-        public int WriterName { get; set; }
+        public string WriterName { get; set; }
         public ICollection<Book> Books { get; set; }
 
     }
