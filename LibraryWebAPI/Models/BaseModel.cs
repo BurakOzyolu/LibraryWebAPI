@@ -2,7 +2,7 @@
 
 namespace LibraryWebAPI.Models
 {
-    public class BaseModel
+    public abstract class BaseModel
     {
         public DateTime CreatedAt { get; set; }
         public int CreatedBy { get; set; }
