@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace LibraryWebAPI.Controllers
 {
@@ -7,17 +8,26 @@ namespace LibraryWebAPI.Controllers
     [ApiController]
     public class BookController : ControllerBase
     {
+        MyContext _context;
+
+        public BookController(MyContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         [Route("")]
         public IActionResult GetAll()
         {
-              return Ok("Bütün kitaplar listelendi");
+            var books = _context.Books.ToList();
+              return Ok(books);
         }
         [HttpGet]
         [Route("{id}")]
         public IActionResult GetById(int id)
         {
-            return Ok($"{id} ye sahip kitap görüntülendi");
+            var book = _context.Books.FirstOrDefault(x => x.BookId == id);
+            return Ok(book);
         }
         [HttpPut]
         [Route("{id}")]

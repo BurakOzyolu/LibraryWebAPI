@@ -19,8 +19,6 @@ namespace LibraryWebAPI
         public DbSet<Type> Types { get; set; }
         public DbSet<Writer> Writes { get; set; }
     }
-    
-
 
 
 }
