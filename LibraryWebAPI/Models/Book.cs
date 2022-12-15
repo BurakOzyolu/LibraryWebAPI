@@ -12,6 +12,6 @@ namespace LibraryWebAPI.Models
         public Writer Writer { get; set; }
         public int TypeId { get; set; }
         public Type Type { get; set; }
-        public int CreatedYear { get; set; }
+        public int? CreatedYear { get; set; }
     }
 }
