@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LibraryWebAPI.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LibraryWebAPI.Controllers
@@ -16,33 +18,52 @@ namespace LibraryWebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("getall")]
         public IActionResult GetAll()
         {
-            var books = _context.Books.ToList();
-              return Ok(books);
+            List<BookViewModel> booklist = new List<BookViewModel>();
+            var TypeList = _context.Types.ToList();
+            var WriterList = _context.Writes.ToList();
+            
+            foreach (var item in _context.Books)
+            {
+                BookViewModel book = new BookViewModel();
+                book.BookId = item.BookId;
+                book.BookName = item.BookName;
+                book.CreatedYear = item.CreatedYear ?? 0;
+                book.NumberOfPages = (item.NumberOfPages) ?? 0 ;
+                var type = TypeList.FirstOrDefault(x => x.typeId == item.TypeId);
+                var typeName = type.typeName;
+                book.Type = typeName;
+                var Writer = WriterList.FirstOrDefault(x => x.WriterId == item.WriterId);
+                string WriterName = Writer.WriterName;
+                book.Writer = WriterName;
+                booklist.Add(book);
+            }  
+            
+            return Ok(booklist);
         }
         [HttpGet]
-        [Route("{id}")]
+        [Route("get/{id}")]
         public IActionResult GetById(int id)
         {
             var book = _context.Books.FirstOrDefault(x => x.BookId == id);
             return Ok(book);
         }
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPost]
+        [Route("update/{id}")]
         public IActionResult Update(string book,int id)
         {
             return Ok($"{id}. Kitap, {book} güncellendi");
         }
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpPost]
+        [Route("delete/{id}")]
         public IActionResult Delete(int id)
         {
             return Ok($"{id} ye sahip kitap silindi");
         }
         [HttpPost]
-        [Route("")]
+        [Route("add")]
         public IActionResult Create(string book)
         {
             return Ok($"{book} isimli kitap sahip kitap eklendi");

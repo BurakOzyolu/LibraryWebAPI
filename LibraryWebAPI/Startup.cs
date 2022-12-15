@@ -19,9 +19,11 @@ namespace LibraryWebAPI
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -33,6 +35,17 @@ namespace LibraryWebAPI
             {
                 options.UseSqlServer(Configuration.GetConnectionString("SqlConnection2"));
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins("http://localhost:3000"
+                                                          );
+                                  });
+            });
+
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
@@ -69,14 +82,15 @@ namespace LibraryWebAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LibraryWebAPI v1"));
             }
 
-            app.UseCors();
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthentication();
-           
+
+           // app.UseDeveloperExceptionPage();
 
             app.UseAuthorization();
 
