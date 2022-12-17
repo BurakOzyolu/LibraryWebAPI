@@ -80,6 +80,13 @@ namespace LibraryWebAPI.Controllers
         [Route("delete/{id}")]
         public IActionResult Delete(int id)
         {
+            var book = _context.Books.FirstOrDefault(x => x.BookId == id);
+            if (book == null)
+            {
+                return Ok($"{id} Id'ye sahip kitap listede bulunmamaktadır");
+            }
+            var result = _context.Books.Remove(book);
+            _context.SaveChanges();
             return Ok($"{id} ye sahip kitap silindi");
         }
         [HttpPost]
