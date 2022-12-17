@@ -30,8 +30,8 @@ namespace LibraryWebAPI.Controllers
                 BookViewModel book = new BookViewModel();
                 book.BookId = item.BookId;
                 book.BookName = item.BookName;
-                book.CreatedYear = item.CreatedYear ?? 0;
-                book.NumberOfPages = (item.NumberOfPages) ?? 0 ;
+                book.CreatedYear = item.CreatedYear;
+                book.NumberOfPages = item.NumberOfPages;
                 var type = TypeList.FirstOrDefault(x => x.typeId == item.TypeId);
                 var typeName = type.typeName;
                 book.Type = typeName;
@@ -48,7 +48,27 @@ namespace LibraryWebAPI.Controllers
         public IActionResult GetById(int id)
         {
             var book = _context.Books.FirstOrDefault(x => x.BookId == id);
-            return Ok(book);
+            /*
+             
+            var TypeList = _context.Types.ToList();
+            var WriterList = _context.Writes.ToList();
+            var type = TypeList.FirstOrDefault(x => x.typeId == book.TypeId);
+            var typeName = type.typeName;
+            var Writer = WriterList.FirstOrDefault(x => x.WriterId == book.WriterId);
+            string WriterName = Writer.WriterName;
+            */
+
+            BookViewModel bookVM = new BookViewModel()
+            {
+                BookId = book.BookId,
+                BookName = book.BookName,
+                CreatedYear = book.CreatedYear,
+                NumberOfPages = book.NumberOfPages,
+                Type = _context.Types.FirstOrDefault(x => x.typeId == book.TypeId).typeName ?? "",
+                Writer = _context.Writes.FirstOrDefault(x => x.WriterId == book.WriterId).WriterName ?? ""
+            };
+            
+            return Ok(bookVM);
         }
         [HttpPost]
         [Route("update/{id}")]
