@@ -4,6 +4,7 @@ using LibraryWebAPI.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -69,65 +70,29 @@ namespace LibraryWebAPI.Controllers
             }
 
         }
-        /*
-          if (!ModelState.IsValid)
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
             {
-                return View(model);
+                return Ok(model);
             }
+            return Ok(model);
 
-            var user = await _userManager.FindByNameAsync(model.UserName);
-            if (user != null)
-            {
-                ModelState.AddModelError(nameof(model.UserName), "Bu kullanıcı adı daha önce kayıt edilmiştir");
-                return View(model);
-            }
+            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
 
-            user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null)
-            {
-                ModelState.AddModelError(nameof(model.Email), "Bu email adresi daha önce kayıt edilmiştir");
-                return View(model);
-            }
-
-            user = new ApplicationUser()
-            {
-                Email = model.Email,
-                Name = model.Name,
-                UserName = model.UserName,
-                Surname = model.Surname
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                var count = _userManager.Users.Count();
-                result = await _userManager.AddToRoleAsync(user, count == 1 ? RoleModels.Admin : RoleModels.Passive);
-                //email onay maili
+                var user = await _userManager.FindByNameAsync(model.UserName);
 
-                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code },
-                    protocol: Request.Scheme);
-
-                var emailMessage = new EmailMessage()
-                {
-                    Contacts = new string[] { user.Email },
-                    Body =
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.",
-                    Subject = "Confirm your email"
-                };
-
-                await _emailSender.SendAsync(emailMessage);
-
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Index", "Home");
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Bir hata oluştu");
-                return View(model);
+                ModelState.AddModelError(String.Empty, "Kullanıcı adı veya şifre hatalı");
+                return Ok(model);
             }
-         
-         */
-
+        }
     }
 }
