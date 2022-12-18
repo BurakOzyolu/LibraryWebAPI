@@ -1,4 +1,5 @@
-﻿using LibraryWebAPI.ViewModels;
+﻿using LibraryWebAPI.Models;
+using LibraryWebAPI.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -72,7 +73,7 @@ namespace LibraryWebAPI.Controllers
         }
         [HttpPost]
         [Route("update/{id}")]
-        public IActionResult Update(string book,int id)
+        public IActionResult Update(Book book,int id)
         {
             return Ok($"{id}. Kitap, {book} güncellendi");
         }
@@ -91,7 +92,7 @@ namespace LibraryWebAPI.Controllers
         }
         [HttpPost]
         [Route("add")]
-        public IActionResult Create(string book)
+        public IActionResult Create(Book book)
         {
             return Ok($"{book} isimli kitap sahip kitap eklendi");
         }
