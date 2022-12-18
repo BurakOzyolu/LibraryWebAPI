@@ -1,6 +1,7 @@
 ﻿using LibraryWebAPI.Models;
 using LibraryWebAPI.Models.Identites;
 using LibraryWebAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -93,6 +94,16 @@ namespace LibraryWebAPI.Controllers
                 ModelState.AddModelError(String.Empty, "Kullanıcı adı veya şifre hatalı");
                 return Ok(model);
             }
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("logout")]
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return Ok();
         }
     }
 }
