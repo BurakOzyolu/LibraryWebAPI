@@ -22,11 +22,12 @@ namespace LibraryWebAPI.Controllers
         [Route("getall")]
         public IActionResult GetAll()
         {
+
             List<BookViewModel> booklist = new List<BookViewModel>();
             var TypeList = _context.Types.ToList();
             var WriterList = _context.Writes.ToList();
             
-            foreach (var item in _context.Books)
+            foreach (var item in _context.Books.Where(x=> x.IsDeleted == false))
             {
                 BookViewModel book = new BookViewModel();
                 book.BookId = item.BookId;
@@ -48,7 +49,7 @@ namespace LibraryWebAPI.Controllers
         [Route("get/{id}")]
         public IActionResult GetById(int id)
         {
-            var book = _context.Books.FirstOrDefault(x => x.BookId == id);
+            var book = _context.Books.FirstOrDefault(x => x.BookId == id && x.IsDeleted == false);
             /*
              
             var TypeList = _context.Types.ToList();
@@ -73,9 +74,25 @@ namespace LibraryWebAPI.Controllers
         }
         [HttpPost]
         [Route("update/{id}")]
-        public IActionResult Update(Book book,int id)
+        public IActionResult Update(BookViewModel bookVM, int id)
         {
-            return Ok($"{id}. Kitap, {book} güncellendi");
+            var book = _context.Books.FirstOrDefault(x => x.BookId == id);
+
+            book.BookName = bookVM.BookName;
+            book.NumberOfPages = bookVM.NumberOfPages;
+            book.IsDeleted = false;
+            book.CreatedYear = bookVM.CreatedYear;
+            var TypeBool = _context.Types.Any(x => x.typeName == bookVM.Type);
+            if(TypeBool)
+            {
+                book.TypeId = _context.Types.FirstOrDefault(x => x.typeName == bookVM.Type).typeId;
+            }
+            var WriterBool = _context.Writes.Any(x => x.WriterName == bookVM.Writer);
+            if (WriterBool)
+            {
+                book.WriterId = _context.Writes.FirstOrDefault(x => x.WriterName == bookVM.Writer).WriterId;
+            }
+            return Ok($"{id}. Kitap, {bookVM} güncellendi");
         }
         [HttpPost]
         [Route("delete/{id}")]
@@ -86,15 +103,24 @@ namespace LibraryWebAPI.Controllers
             {
                 return Ok($"{id} Id'ye sahip kitap listede bulunmamaktadır");
             }
-            var result = _context.Books.Remove(book);
+            book.IsDeleted = true;
             _context.SaveChanges();
-            return Ok($"{id} ye sahip kitap silindi");
+            return Ok($"{book.BookName} isimli kitap silindi");
         }
         [HttpPost]
         [Route("add")]
-        public IActionResult Create(Book book)
+        public IActionResult Create(BookViewModel bookVM)
         {
-            return Ok($"{book} isimli kitap sahip kitap eklendi");
+            var book = new Book()
+            {
+                BookName = bookVM.BookName,
+                IsDeleted = false,
+                NumberOfPages = bookVM.NumberOfPages,
+                CreatedYear = bookVM.CreatedYear
+            };
+            var result = _context.Books.Add(book);
+            _context.SaveChanges();
+            return Ok($"{bookVM.BookName} isimli kitap sahip kitap eklendi");
         }
     }
 }
