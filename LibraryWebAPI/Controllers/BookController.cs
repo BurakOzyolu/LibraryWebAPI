@@ -120,7 +120,12 @@ namespace LibraryWebAPI.Controllers
             };
             var result = _context.Books.Add(book);
             _context.SaveChanges();
-            return Ok($"{bookVM.BookName} isimli kitap sahip kitap eklendi");
+             return Ok($"{bookVM.BookName} isimli kitap sahip kitap eklendi");
         }
+        public IActionResult News()
+        {
+            return null;
+        }
+
     }
 }

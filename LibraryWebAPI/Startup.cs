@@ -45,22 +45,6 @@ namespace LibraryWebAPI
                                                           );
                                   });
             });
-
-
-            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-            {
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireDigit = true;
-                options.Password.RequiredLength = 5;
-
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5); //atma süresi
-                options.Lockout.MaxFailedAccessAttempts = 3; //3ten fazla yanlýþ girerse atar
-                options.Lockout.AllowedForNewUsers = false;
-
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = true;
-            }).AddEntityFrameworkStores<MyContext>().AddDefaultTokenProviders();
             /*
              
              

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace LibraryWebAPI
 {
    
-     public class MyContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
+     public class MyContext : DbContext
     {
         public MyContext(DbContextOptions options) : base(options)
         {
@@ -17,6 +17,7 @@ namespace LibraryWebAPI
         public DbSet<Process> Processes { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Type> Types { get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Writer> Writes { get; set; }
     }
 

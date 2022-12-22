@@ -9,6 +9,6 @@ namespace LibraryWebAPI.Models
         public string studentName { get; set; }
         public int GradeId { get; set; }
         public Grade Grade { get; set; }
-        public string UserId { get; set; }
+        public int UserId { get; set; }
     }
 }
