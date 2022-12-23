@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LibraryWebAPI.Models
 {
-    public class Type
+    public class BookType
     {
         [Key]
         public int typeId { get; set; }

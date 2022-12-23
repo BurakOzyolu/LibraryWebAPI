@@ -16,7 +16,7 @@ namespace LibraryWebAPI
         public DbSet<Grade> Grades { get; set; }
         public DbSet<Process> Processes { get; set; }
         public DbSet<Student> Students { get; set; }
-        public DbSet<Type> Types { get; set; }
+        public DbSet<BookType> BookTypes { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Writer> Writes { get; set; }
     }

@@ -11,7 +11,7 @@ namespace LibraryWebAPI.ViewModels
         public List<Book> listBook { get; set; }
         public List<Student> Students { get; set; }
         public List<Grade> Grades { get; set; }
-        public List<Type> Types { get; set; }
+        public List<BookType> Types { get; set; }
         public List<Writer> Writers { get; set; }
 
     }

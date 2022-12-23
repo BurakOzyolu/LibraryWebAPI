@@ -17,14 +17,14 @@ namespace LibraryWebAPI.Controllers
         {
             _context = context;
         }
-
+        
         [HttpGet]
         [Route("getall")]
         public IActionResult GetAll()
         {
 
             List<BookViewModel> booklist = new List<BookViewModel>();
-            var TypeList = _context.Types.ToList();
+            var TypeList = _context.BookTypes.ToList();
             var WriterList = _context.Writes.ToList();
 
             foreach (var item in _context.Books.Where(x => x.IsDeleted == false))
@@ -35,10 +35,10 @@ namespace LibraryWebAPI.Controllers
                 book.CreatedYear = item.CreatedYear;
                 book.NumberOfPages = item.NumberOfPages;
                 var type = TypeList.FirstOrDefault(x => x.typeId == item.TypeId);
-                var typeName = type.typeName;
+                string typeName = (type == null) ? "" : type.typeName;
                 book.Type = typeName;
                 var Writer = WriterList.FirstOrDefault(x => x.WriterId == item.WriterId);
-                string WriterName = Writer.WriterName;
+                string WriterName = (Writer == null) ? "": Writer.WriterName;
                 book.Writer = WriterName;
                 book.BookImage = item.BookImage;
                 booklist.Add(book);
@@ -65,10 +65,10 @@ namespace LibraryWebAPI.Controllers
             book.NumberOfPages = bookVM.NumberOfPages;
             book.IsDeleted = false;
             book.CreatedYear = bookVM.CreatedYear;
-            var TypeBool = _context.Types.Any(x => x.typeName == bookVM.Type);
+            var TypeBool = _context.BookTypes.Any(x => x.typeName == bookVM.Type);
             if (TypeBool)
             {
-                book.TypeId = _context.Types.FirstOrDefault(x => x.typeName == bookVM.Type).typeId;
+                book.TypeId = _context.BookTypes.FirstOrDefault(x => x.typeName == bookVM.Type).typeId;
             }
             var WriterBool = _context.Writes.Any(x => x.WriterName == bookVM.Writer);
             if (WriterBool)
@@ -105,5 +105,6 @@ namespace LibraryWebAPI.Controllers
             _context.SaveChanges();
             return Ok($"{book.BookName} isimli kitap silindi");
         }
+        
     }
 }
