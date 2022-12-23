@@ -1,11 +1,7 @@
 ﻿using LibraryWebAPI.Models;
-using LibraryWebAPI.Models.Identites;
 using LibraryWebAPI.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,85 +11,85 @@ namespace LibraryWebAPI.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
+        MyContext _context;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
+        public AccountController(MyContext context)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _roleManager = roleManager;
+            _context = context;
         }
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public IActionResult Register(User model)
         {
-            if (!ModelState.IsValid)
+            RegisterResponseViewModel response = new RegisterResponseViewModel();
+            var IsUserAlready = _context.Users.Any(x => x.UserName == model.UserName);
+            if (IsUserAlready)
             {
-                return Ok(model);
-            }
-            var user = await _userManager.FindByNameAsync(model.UserName);
-            if (user != null)
-            {
-                ModelState.AddModelError(nameof(model.UserName), "Bu kullanıcı adı daha önce kayıt edilmiştir");
-                return Ok(model);
+                response.StatusCode = 100;
+                response.StatusMessage = "Bu kullanıcı adı zaten var";
+                return Ok(response);
             }
 
-            user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError(nameof(model.Email), "Bu email adresi daha önce kayıt edilmiştir");
-                return Ok(model);
-            }
+                var User = new User()
+                {
+                    UserName = model.UserName,
+                    Password = model.Password,
+                    Email = model.Email,
+                    Role = model.Role,
+                    IsDeleted = false,
+                    PhoneNo = model.PhoneNo
+                };
+                response.UserName = model.UserName;
+                response.Password = model.Password;
+                response.Email = model.Email;
+                response.Role = model.Role;
+                response.IsDeleted = false;
+                response.PhoneNo = model.PhoneNo;
+                response.StatusCode = 200;
+                response.StatusMessage = "Registration succesfull";
 
-            user = new ApplicationUser()
-            {
-                Email = model.Email,
-                Name = model.Name,
-                UserName = model.UserName,
-                Surname = model.Surname,
-                EmailConfirmed=true
-            };
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                var count = _userManager.Users.Count();
-                result = await _userManager.AddToRoleAsync(user, count == 1 ? RoleModels.Admin : RoleModels.User);
-                return Ok();
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Bir hata oluştu");
-                return Ok(model);
+                response.StatusCode = 100;
+                response.StatusMessage = "Registration failed";
             }
 
+            return Ok(response);
         }
+        [HttpPost]
+        [Route("login")]
+        public IActionResult Login(User model)
+        {
+            RegisterResponseViewModel response = new RegisterResponseViewModel();
+            var Login = _context.Users.Any(x => x.UserName == model.UserName && x.Password ==model.Password);
+            if (Login)
+            {
+                response.StatusCode = 200;
+                response.StatusMessage = "Login succesfull";
+                response.Role = model.Role;
+                response.Email = model.Email;
+                response.UserName = model.UserName;
+                return Ok(response);
+            }
+            else
+            {
+                return Ok("Login failed");
+            }
+        }
+    }
+}
+/*
+
+        
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                return Ok(model);
-            }
-            return Ok(model);
-
-            var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, true);
-
-            if (result.Succeeded)
-            {
-                var user = await _userManager.FindByNameAsync(model.UserName);
-
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                ModelState.AddModelError(String.Empty, "Kullanıcı adı veya şifre hatalı");
-                return Ok(model);
-            }
+            return null;
         }
 
         [HttpGet]
@@ -102,8 +98,15 @@ namespace LibraryWebAPI.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
-            return Ok();
-        }
-    }
-}
+            return null;
+        } 
+ 
+ 
+ */
+
+
+
+
+/*
+
+ */

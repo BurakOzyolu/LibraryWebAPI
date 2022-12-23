@@ -26,8 +26,8 @@ namespace LibraryWebAPI.Controllers
             List<BookViewModel> booklist = new List<BookViewModel>();
             var TypeList = _context.Types.ToList();
             var WriterList = _context.Writes.ToList();
-            
-            foreach (var item in _context.Books.Where(x=> x.IsDeleted == false))
+
+            foreach (var item in _context.Books.Where(x => x.IsDeleted == false))
             {
                 BookViewModel book = new BookViewModel();
                 book.BookId = item.BookId;
@@ -41,36 +41,18 @@ namespace LibraryWebAPI.Controllers
                 string WriterName = Writer.WriterName;
                 book.Writer = WriterName;
                 booklist.Add(book);
-            }  
-            
+            }
+
             return Ok(booklist);
         }
+
         [HttpGet]
         [Route("get/{id}")]
         public IActionResult GetById(int id)
         {
             var book = _context.Books.FirstOrDefault(x => x.BookId == id && x.IsDeleted == false);
-            /*
-             
-            var TypeList = _context.Types.ToList();
-            var WriterList = _context.Writes.ToList();
-            var type = TypeList.FirstOrDefault(x => x.typeId == book.TypeId);
-            var typeName = type.typeName;
-            var Writer = WriterList.FirstOrDefault(x => x.WriterId == book.WriterId);
-            string WriterName = Writer.WriterName;
-            */
+            return Ok(book);
 
-            BookViewModel bookVM = new BookViewModel()
-            {
-                BookId = book.BookId,
-                BookName = book.BookName,
-                CreatedYear = book.CreatedYear,
-                NumberOfPages = book.NumberOfPages,
-                Type = _context.Types.FirstOrDefault(x => x.typeId == book.TypeId).typeName ?? "",
-                Writer = _context.Writes.FirstOrDefault(x => x.WriterId == book.WriterId).WriterName ?? ""
-            };
-            
-            return Ok(bookVM);
         }
         [HttpPost]
         [Route("update/{id}")]
@@ -83,7 +65,7 @@ namespace LibraryWebAPI.Controllers
             book.IsDeleted = false;
             book.CreatedYear = bookVM.CreatedYear;
             var TypeBool = _context.Types.Any(x => x.typeName == bookVM.Type);
-            if(TypeBool)
+            if (TypeBool)
             {
                 book.TypeId = _context.Types.FirstOrDefault(x => x.typeName == bookVM.Type).typeId;
             }
@@ -93,19 +75,6 @@ namespace LibraryWebAPI.Controllers
                 book.WriterId = _context.Writes.FirstOrDefault(x => x.WriterName == bookVM.Writer).WriterId;
             }
             return Ok($"{id}. Kitap, {bookVM} güncellendi");
-        }
-        [HttpPost]
-        [Route("delete/{id}")]
-        public IActionResult Delete(int id)
-        {
-            var book = _context.Books.FirstOrDefault(x => x.BookId == id);
-            if (book == null)
-            {
-                return Ok($"{id} Id'ye sahip kitap listede bulunmamaktadır");
-            }
-            book.IsDeleted = true;
-            _context.SaveChanges();
-            return Ok($"{book.BookName} isimli kitap silindi");
         }
         [HttpPost]
         [Route("add")]
@@ -120,12 +89,20 @@ namespace LibraryWebAPI.Controllers
             };
             var result = _context.Books.Add(book);
             _context.SaveChanges();
-             return Ok($"{bookVM.BookName} isimli kitap sahip kitap eklendi");
+            return Ok($"{bookVM.BookName} isimli kitap sahip kitap eklendi");
         }
-        public IActionResult News()
+        [HttpPost]
+        [Route("delete/{id}")]
+        public IActionResult Delete(int id)
         {
-            return null;
+            var book = _context.Books.FirstOrDefault(x => x.BookId == id);
+            if (book == null)
+            {
+                return Ok($"{id} Id'ye sahip kitap listede bulunmamaktadır");
+            }
+            book.IsDeleted = true;
+            _context.SaveChanges();
+            return Ok($"{book.BookName} isimli kitap silindi");
         }
-
     }
 }

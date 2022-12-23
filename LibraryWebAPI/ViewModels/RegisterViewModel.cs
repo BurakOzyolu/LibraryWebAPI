@@ -23,10 +23,6 @@ namespace LibraryWebAPI.ViewModels
         [Display(Name = "Şifre")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-        [Required(ErrorMessage = "Şifre tekrar alanı gereklidir.")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Şifre Tekrar")]
-        [Compare(nameof(Password), ErrorMessage = "Şifreler uyuşmuyor")]
-        public string ConfirmPassword { get; set; }
+
     }
 }

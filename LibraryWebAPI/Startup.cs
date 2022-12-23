@@ -37,14 +37,8 @@ namespace LibraryWebAPI
             });
 
             services.AddCors(options =>
-            {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                                  policy =>
-                                  {
-                                      policy.WithOrigins("http://localhost:3000"
-                                                          );
-                                  });
-            });
+                        options.AddDefaultPolicy(builder =>
+                        builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
             /*
              
              
@@ -66,7 +60,7 @@ namespace LibraryWebAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LibraryWebAPI v1"));
             }
 
-            app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors();
 
             app.UseHttpsRedirection();
 
