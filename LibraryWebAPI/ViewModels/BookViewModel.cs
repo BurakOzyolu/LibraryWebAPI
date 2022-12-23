@@ -8,5 +8,7 @@
         public string Type { get; set; } = "Tipi tanımlanmamış";
         public int? CreatedYear { get; set; }
         public int? NumberOfPages { get; set; }
+        public string BookImage { get; set; }
+
     }
 }

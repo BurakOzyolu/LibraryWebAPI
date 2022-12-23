@@ -40,6 +40,7 @@ namespace LibraryWebAPI.Controllers
                 var Writer = WriterList.FirstOrDefault(x => x.WriterId == item.WriterId);
                 string WriterName = Writer.WriterName;
                 book.Writer = WriterName;
+                book.BookImage = item.BookImage;
                 booklist.Add(book);
             }
 

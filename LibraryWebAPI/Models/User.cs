@@ -12,6 +12,7 @@ namespace LibraryWebAPI.Models
         public string PhoneNo { get; set; }
         public string Role { get; set; }
         public bool? IsDeleted { get; set; }
+        public string UserImage { get; set; }
 
     }
 }
