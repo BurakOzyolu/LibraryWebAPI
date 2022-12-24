@@ -12,6 +12,6 @@ namespace LibraryWebAPI.Models
         public int StudentId { get; set; }
         public Student Student { get; set; }
         public DateTime PurchaseDate { get; set; } = DateTime.UtcNow;
-        public DateTime ReturnDate { get; set; }
+        public DateTime? ReturnDate { get; set; }
     }
 }
