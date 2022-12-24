@@ -3,67 +3,66 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
+
 namespace LibraryWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TypesController : ControllerBase
+    public class GradeController : ControllerBase
     {
         MyContext _context;
 
-        public TypesController(MyContext context)
+        public GradeController(MyContext context)
         {
             _context = context;
         }
-
         [HttpGet]
         [Route("getall")]
         public IActionResult GetAll()
         {
-            var booktypes = _context.BookTypes.ToList();
-            return Ok(booktypes);
+            var Grades = _context.Grades.ToList();
+            return Ok(Grades);
         }
 
         [HttpGet]
         [Route("get/{id}")]
         public IActionResult GetById(int id)
         {
-            var booktype = _context.BookTypes.FirstOrDefault(x => x.typeId == id);
-            return Ok(booktype);
+            var Grade = _context.Grades.FirstOrDefault(x => x.GradeId == id);
+            return Ok(Grade);
         }
 
         //Ekleme İşlemi 
         [HttpPost]
         [Route("add")]
-        public IActionResult Create(BookType booktype)
+        public IActionResult Create(Grade Grade)
         {
-            var newbooktype = new BookType()
+            var newGrade = new Grade()
             {
-                typeName= booktype.typeName
+                GradeName = Grade.GradeName
             };
-            _context.BookTypes.Add(newbooktype);
+            _context.Grades.Add(newGrade);
             _context.SaveChanges();
-            return Ok($"{booktype.typeName} eklendi");
+            return Ok($"{Grade.GradeName} eklendi");
         }
 
         //Güncelleme İşlemi Yapar
         [HttpPut]
         [Route("update")]
-        public IActionResult Update(BookType booktype)
+        public IActionResult Update(Grade Grade)
         {
             try
             {
-                var newbooktype = _context.BookTypes.FirstOrDefault(x => x.typeId == booktype.typeId);
-                newbooktype.typeName = booktype.typeName;
+                var editGrade = _context.Grades.FirstOrDefault(x => x.GradeId == Grade.GradeId);
+                editGrade.GradeName = Grade.GradeName;
                 _context.SaveChanges();
-                var efbooklist = _context.BookTypes.ToList();
-                return Ok($"{booktype.typeName} güncellendi");
+                return Ok($"{Grade.GradeName} güncellendi");
             }
             catch
             {
                 return Ok("Güncelleme işlemi yapılamadı");
             }
-            
+
         }
         //Silme İşlemi
         [HttpPost]
@@ -72,8 +71,8 @@ namespace LibraryWebAPI.Controllers
         {
             try
             {
-                var deletedType = _context.BookTypes.FirstOrDefault(x => x.typeId == id);
-                var result = _context.BookTypes.Remove(deletedType);
+                var deletedGrade = _context.Grades.FirstOrDefault(x => x.GradeId == id);
+                var result = _context.Grades.Remove(deletedGrade);
                 _context.SaveChanges();
                 return Ok("Silme işlemi yapıldı");
             }

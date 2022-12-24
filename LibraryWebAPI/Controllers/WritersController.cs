@@ -7,63 +7,61 @@ namespace LibraryWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TypesController : ControllerBase
+    public class WritersController : ControllerBase
     {
         MyContext _context;
 
-        public TypesController(MyContext context)
+        public WritersController(MyContext context)
         {
             _context = context;
         }
-
         [HttpGet]
         [Route("getall")]
         public IActionResult GetAll()
         {
-            var booktypes = _context.BookTypes.ToList();
-            return Ok(booktypes);
+            var writers = _context.Writes.ToList();
+            return Ok(writers);
         }
 
         [HttpGet]
         [Route("get/{id}")]
         public IActionResult GetById(int id)
         {
-            var booktype = _context.BookTypes.FirstOrDefault(x => x.typeId == id);
-            return Ok(booktype);
+            var writer = _context.Writes.FirstOrDefault(x => x.WriterId == id);
+            return Ok(writer);
         }
 
         //Ekleme İşlemi 
         [HttpPost]
         [Route("add")]
-        public IActionResult Create(BookType booktype)
+        public IActionResult Create(Writer writer)
         {
-            var newbooktype = new BookType()
+            var newWriter = new Writer()
             {
-                typeName= booktype.typeName
+                WriterName = writer.WriterName
             };
-            _context.BookTypes.Add(newbooktype);
+            _context.Writes.Add(newWriter);
             _context.SaveChanges();
-            return Ok($"{booktype.typeName} eklendi");
+            return Ok($"{writer.WriterName} eklendi");
         }
 
         //Güncelleme İşlemi Yapar
         [HttpPut]
         [Route("update")]
-        public IActionResult Update(BookType booktype)
+        public IActionResult Update(Writer writer)
         {
             try
             {
-                var newbooktype = _context.BookTypes.FirstOrDefault(x => x.typeId == booktype.typeId);
-                newbooktype.typeName = booktype.typeName;
+                var editWriter = _context.Writes.FirstOrDefault(x => x.WriterId == writer.WriterId);
+                editWriter.WriterName = writer.WriterName;
                 _context.SaveChanges();
-                var efbooklist = _context.BookTypes.ToList();
-                return Ok($"{booktype.typeName} güncellendi");
+                return Ok($"{writer.WriterName} güncellendi");
             }
             catch
             {
                 return Ok("Güncelleme işlemi yapılamadı");
             }
-            
+
         }
         //Silme İşlemi
         [HttpPost]
@@ -72,8 +70,8 @@ namespace LibraryWebAPI.Controllers
         {
             try
             {
-                var deletedType = _context.BookTypes.FirstOrDefault(x => x.typeId == id);
-                var result = _context.BookTypes.Remove(deletedType);
+                var deletedWriter = _context.Writes.FirstOrDefault(x => x.WriterId == id);
+                var result = _context.Writes.Remove(deletedWriter);
                 _context.SaveChanges();
                 return Ok("Silme işlemi yapıldı");
             }
