@@ -1,0 +1,7 @@
+-Proje .Net 5.0 ile geliştirilmiştir.
+-Database first yaklaşımı kullanılmıştır.
+-Entity Framework kullanılmıştır.
+-Veritabanı bağlatısı Microsoft SQL Server'dir
+-Projeyi indirdikten sonra, Migration dosyaları silinmeli. 
+-Connection string ayarları kullanılan veritabanı'na göre ayarlanmalıdır.
+-Proje aynı zamanda fronted kısmı React ile bağlanılmıştır.
